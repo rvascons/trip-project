@@ -3,6 +3,7 @@ import { UserService } from 'src/user/user.service';
 import * as bcrypt from 'bcrypt';
 import { Prisma, User } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
+import { UserJwtPayload } from './jwt.interface';
 
 @Injectable()
 export class AuthService {
@@ -40,7 +41,7 @@ export class AuthService {
   }
 
   async login(user: Omit<User, 'password'>): Promise<{ access_token: string }> {
-    const payload = {
+    const payload: UserJwtPayload = {
       sub: user.id,
       email: user.email,
       name: user.name,
