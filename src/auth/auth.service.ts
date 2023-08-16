@@ -40,7 +40,11 @@ export class AuthService {
     }
   }
 
-  async login(user: Omit<User, 'password'>): Promise<{ access_token: string }> {
+  async login(
+    data: Omit<User, 'password' | 'name'>,
+  ): Promise<{ access_token: string }> {
+    const user = await this.userService.findOne({ email: data.email });
+
     const payload: UserJwtPayload = {
       sub: user.id,
       email: user.email,

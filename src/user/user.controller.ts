@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common';
 import { Prisma, User } from '@prisma/client';
 import { UserService } from './user.service';
+import { CurrentUser } from 'src/auth/decorators/currentUser.decorator';
 
 @Controller('user')
 export class UserController {
