@@ -40,19 +40,29 @@ export class UserController {
   findOne(
     @Param('id') userWhereUniqueInput: Prisma.UserWhereUniqueInput,
   ): Promise<User | null> {
-    return this.userService.findOne(userWhereUniqueInput);
+    const targetId = { id: Number(userWhereUniqueInput) };
+    return this.userService.findOne(targetId);
   }
 
   @Patch(':id')
   update(
+    @CurrentUser() user: User,
     @Param('id') where: Prisma.UserWhereUniqueInput,
     @Body() data: Prisma.UserUpdateInput,
   ) {
-    return this.userService.update(where, data);
+    const targetId = Number(where);
+    const currentUserId = user.id;
+
+    if (targetId !== currentUserId) {
+      throw new Error('Unauthorized operation');
+    }
+
+    return this.userService.update(targetId, data);
   }
 
   @Delete(':id')
   remove(@Param('id') where: Prisma.UserWhereUniqueInput) {
-    return this.userService.remove(where);
+    const targetId = Number(where);
+    return this.userService.remove(targetId);
   }
 }

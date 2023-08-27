@@ -40,22 +40,24 @@ export class UserService {
   ): Promise<User | null> {
     return this.prisma.user.findUnique({
       where: userWhereUniqueInput,
+      include: { userTrips: true },
     });
   }
 
-  async update(
-    where: Prisma.UserWhereUniqueInput,
-    data: Prisma.UserUpdateInput,
-  ): Promise<User> {
+  async update(id: number, data: Prisma.UserUpdateInput): Promise<User> {
+    if (data.password) {
+      data.password = await bcrypt.hash(data.password.toString(), 10);
+    }
+
     return this.prisma.user.update({
       data,
-      where,
+      where: { id },
     });
   }
 
-  async remove(where: Prisma.UserWhereUniqueInput): Promise<User> {
+  async remove(id: number): Promise<User> {
     return this.prisma.user.delete({
-      where,
+      where: { id },
     });
   }
 }
